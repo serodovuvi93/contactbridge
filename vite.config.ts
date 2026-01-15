@@ -6,7 +6,11 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   build: {
-    // We empty outDir manually in scripts to handle multiple build steps
+    // Prevent emptying output dir between steps
     emptyOutDir: false, 
+  },
+  ssr: {
+    // Ensure these are bundled for the node renderer
+    noExternal: ['react-router-dom', 'lucide-react', 'react-qr-code']
   }
 });

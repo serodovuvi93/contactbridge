@@ -8,7 +8,7 @@ const toAbsolute = (p) => path.resolve(__dirname, p);
 const template = fs.readFileSync(toAbsolute('dist/static/index.html'), 'utf-8');
 const { render } = await import('./dist/server/entry-server.js');
 
-// Define routes and their specific metadata
+// Маршруты для генерации (SEO)
 const routes = [
   { 
     url: '/', 
@@ -33,53 +33,55 @@ const routes = [
 ];
 
 (async () => {
-  // Loop over each route to generate a static HTML file
+  console.log('🚀 Starting Static Site Generation...');
+  
   for (const route of routes) {
-    const appHtml = render(route.url);
+    try {
+      console.log(`📄 Generating: ${route.url}`);
+      
+      // 1. Рендерим React-компонент в строку
+      const appHtml = render(route.url);
 
-    // Replace Title
-    let html = template.replace(
-      '<!--title-outlet-->', 
-      `<title>${route.title}</title>`
-    );
+      // 2. Берем шаблон index.html
+      let html = template;
 
-    // Replace Meta Description
-    // First, remove existing default description to avoid duplicates if present
-    html = html.replace(/<meta name="description" content=".*?" \/>/, '');
-    
-    // Inject new description
-    html = html.replace(
-      '<!--meta-outlet-->',
-      `<meta name="description" content="${route.desc}" />`
-    );
+      // 3. Вставляем HTML приложения
+      // ВАЖНО: Мы заменяем <!--app-html--> на реальный контент
+      html = html.replace('<!--app-html-->', appHtml);
 
-    // Update Open Graph tags for better social sharing
-    html = html.replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${route.title}" />`);
-    html = html.replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${route.desc}" />`);
+      // 4. Заменяем мета-теги
+      html = html.replace('<!--title-outlet-->', `<title>${route.title}</title>`);
+      
+      // Удаляем дефолтные теги, чтобы не дублировались
+      html = html.replace(/<title>.*?<\/title>/, ''); 
+      html = html.replace(/<meta name="description" content=".*?" \/>/, '');
+      
+      // Вставляем новые
+      html = html.replace('<!--meta-outlet-->', `<meta name="description" content="${route.desc}" />`);
+      
+      // Open Graph
+      html = html.replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${route.title}" />`);
+      html = html.replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${route.desc}" />`);
 
-    // Inject the rendered app HTML
-    html = html.replace(`<!--app-html-->`, appHtml);
+      // 5. Определяем путь для сохранения
+      const filePath = route.url === '/' 
+        ? 'dist/static/index.html' 
+        : `dist/static${route.url}/index.html`;
 
-    // Determine output path
-    const filePath = route.url === '/' 
-      ? 'dist/static/index.html' 
-      : `dist/static${route.url}/index.html`;
+      // 6. Создаем папку и сохраняем файл
+      const dir = path.dirname(toAbsolute(filePath));
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
 
-    // Ensure directory exists
-    const dir = path.dirname(toAbsolute(filePath));
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(toAbsolute(filePath), html);
+    } catch (e) {
+      console.error(`❌ Error generating ${route.url}:`, e);
     }
-
-    // Write file
-    fs.writeFileSync(toAbsolute(filePath), html);
-    console.log(`Generated: ${filePath}`);
   }
 
-  // Copy root index.html to 404.html for SPA fallback (GitHub Pages requirement)
+  // Копируем index.html в 404.html для GitHub Pages (SPA fallback)
   fs.copyFileSync(toAbsolute('dist/static/index.html'), toAbsolute('dist/static/404.html'));
-  console.log('Generated: dist/static/404.html');
-  
-  // Cleanup server build
-  // fs.rmSync(toAbsolute('dist/server'), { recursive: true });
+  console.log('✅ 404.html generated');
+  console.log('🎉 SSG Build Complete!');
 })();

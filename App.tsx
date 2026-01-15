@@ -9,7 +9,7 @@ import { PrivacyModal, TermsModal } from './components/LegalModals';
 import { ConversionType, InternalContact, ColumnMapping, VCardVersion } from './types';
 import { parseCSV, parseVCF } from './services/parserService';
 import { generateBulkVCF, generateCSV } from './services/generatorService';
-import { Activity, ShieldCheck, RefreshCw, Scissors, Home } from 'lucide-react';
+import { Activity, ShieldCheck, RefreshCw, Scissors } from 'lucide-react';
 
 enum Step {
   HOME = 0,
@@ -51,13 +51,14 @@ const App: React.FC = () => {
 
   const pageType = getPageType();
 
-  // Reset state when path changes, unless we are in the middle of a workflow (Step > HOME)
-  // Actually, we want persistent links. If user navigates to /splitter, we show splitter landing.
-  // If they click "Start", we setStep(Step.UPLOAD) but keep URL?
-  // Let's keep URL simple.
+  // Reset logic when navigating to home, but not if we are just switching tools
+  useEffect(() => {
+    if (location.pathname === '/' && step !== Step.HOME) {
+       setStep(Step.HOME);
+    }
+  }, [location.pathname]);
 
   const handleStartConvert = () => {
-    // If on generic home, default to convert. If on specific page, convert.
     setDefaultUploadMode('convert');
     setStep(Step.UPLOAD);
   };
@@ -128,6 +129,8 @@ const App: React.FC = () => {
   };
 
   const handleDownload = (version: VCardVersion) => {
+    if (typeof window === 'undefined') return;
+    
     let content = '';
     let mimeType = '';
     let extension = '';
@@ -150,18 +153,6 @@ const App: React.FC = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
-
-  const reset = () => {
-    setStep(Step.HOME);
-    setContacts([]);
-    setRawFileContent('');
-    setCsvData([]);
-    if (pageType !== 'home') {
-      // Stay on current tool page
-    } else {
-      navigate('/');
-    }
   };
 
   const isSplitMode = step === Step.SPLIT || (step === Step.UPLOAD && defaultUploadMode === 'split');
