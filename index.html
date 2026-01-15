@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--title-outlet-->
+    <title>ContactBridge Pro - Universal Contact Converter</title>
+    <!--meta-outlet-->
+    <meta name="description" content="Secure, client-side CSV to VCF and VCF to CSV converter. Convert Excel contacts to iPhone/Android, split large VCF files. 100% private." />
+    
+    <meta name="keywords" content="csv to vcf, vcf to csv, vcard converter, excel to vcf, iphone contacts import, android contacts backup, vcf splitter, vcard splitter" />
+    <meta name="author" content="ContactBridge Pro" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ContactBridge Pro - Secure Contact Converter" />
+    <meta property="og:description" content="Convert CSV to VCF and VCF to CSV securely in your browser. No data upload. Supports vCard 3.0/4.0." />
+    <meta property="og:image" content="https://placehold.co/1200x630/2563eb/ffffff?text=ContactBridge+Pro" />
+    <meta property="og:url" content="https://contactbridge.pro/" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="ContactBridge Pro - Secure Contact Converter" />
+    <meta property="twitter:description" content="Convert CSV to VCF and VCF to CSV securely in your browser. No data upload." />
+    <meta property="twitter:image" content="https://placehold.co/1200x630/2563eb/ffffff?text=ContactBridge+Pro" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ContactBridge Pro",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "url": "https://contactbridge.pro",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "A secure, client-side CSV <-> VCF converter. Supports vCard 3.0/4.0, bulk processing, and UTF-8 encoding.",
+      "featureList": [
+        "CSV to vCard conversion",
+        "vCard to CSV conversion",
+        "VCF Splitting",
+        "Client-side processing"
+      ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+      .scrollbar-hide::-webkit-scrollbar { display: none; }
+      .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-qr-code": "https://esm.sh/react-qr-code@^2.0.18",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+    "jszip": "https://esm.sh/jszip@^3.10.1",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-router-dom/": "https://esm.sh/react-router-dom@^7.12.0/",
+    "fs": "https://esm.sh/fs@^0.0.1-security",
+    "path": "https://esm.sh/path@^0.12.7",
+    "url": "https://esm.sh/url@^0.11.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900 antialiased">
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/entry-client.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
