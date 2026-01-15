@@ -8,6 +8,9 @@ const toAbsolute = (p) => path.resolve(__dirname, p);
 const template = fs.readFileSync(toAbsolute('dist/static/index.html'), 'utf-8');
 const { render } = await import('./dist/server/entry-server.js');
 
+// Base path matches vite.config.ts
+const basePath = '/contactbridge';
+
 // Маршруты для генерации (SEO)
 const routes = [
   { 
@@ -40,7 +43,8 @@ const routes = [
       console.log(`📄 Generating: ${route.url}`);
       
       // 1. Рендерим React-компонент в строку
-      const appHtml = render(route.url);
+      const fullUrl = route.url === '/' ? `${basePath}/` : `${basePath}${route.url}`;
+      const appHtml = render(fullUrl);
 
       // 2. Берем шаблон index.html
       let html = template;
@@ -50,18 +54,19 @@ const routes = [
       html = html.replace('<!--app-html-->', appHtml);
 
       // 4. Заменяем мета-теги
-      html = html.replace('<!--title-outlet-->', `<title>${route.title}</title>`);
       
-      // Удаляем дефолтные теги, чтобы не дублировались
-      html = html.replace(/<title>.*?<\/title>/, ''); 
-      html = html.replace(/<meta name="description" content=".*?" \/>/, '');
+      // Удаляем дефолтные теги СНАЧАЛА, чтобы не удалить только что вставленные
+      // Используем [\s\S]*? для поддержки многострочных тегов
+      html = html.replace(/<title>[\s\S]*?<\/title>/, '');
+      html = html.replace(/<meta name="description" content="[\s\S]*?" \/>/, '');
       
       // Вставляем новые
+      html = html.replace('<!--title-outlet-->', `<title>${route.title}</title>`);
       html = html.replace('<!--meta-outlet-->', `<meta name="description" content="${route.desc}" />`);
       
-      // Open Graph
-      html = html.replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="${route.title}" />`);
-      html = html.replace(/<meta property="og:description" content=".*?" \/>/, `<meta property="og:description" content="${route.desc}" />`);
+      // Open Graph - заменяем существующие
+      html = html.replace(/<meta property="og:title" content="[\s\S]*?" \/>/, `<meta property="og:title" content="${route.title}" />`);
+      html = html.replace(/<meta property="og:description" content="[\s\S]*?" \/>/, `<meta property="og:description" content="${route.desc}" />`);
 
       // 5. Определяем путь для сохранения
       const filePath = route.url === '/' 

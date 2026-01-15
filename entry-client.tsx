@@ -11,7 +11,7 @@ if (!rootElement) {
 ReactDOM.hydrateRoot(
   rootElement,
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
       <App />
     </BrowserRouter>
   </React.StrictMode>
