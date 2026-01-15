@@ -1,0 +1,4 @@
+{
+  "name": "ContactBridge Pro",
+  "description": "A secure, client-side CSV <-> VCF converter. Supports vCard 3.0/4.0, bulk processing, and UTF-8 encoding for full compatibility with iOS, Android, and Outlook."
+}
